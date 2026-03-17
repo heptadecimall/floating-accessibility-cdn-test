@@ -31,9 +31,9 @@
     .no-change ul { padding: 4px !important; margin: 0 !important; }
     .no-change p { margin: 1px !important; }
     #access-btn {
-      background-color: #ffffff !important;
+      background-color: #1a56db  !important;
       border: none !important;
-      border-radius: 6px !important;
+      border-radius: 0px 10px 10px 0px !important;
       padding: 10px 12px !important;
       cursor: pointer;
       color: #555 !important;
@@ -41,7 +41,7 @@
       align-items: center;
       justify-content: center;
     }
-    #access-btn i { color: #555 !important; font-size: 24px; }
+    #access-btn i { color: #ffffff !important; font-size: 16px !important; }
     #access-btn.a11y-btn-open {
       background-color: #1a56db !important;
     }
