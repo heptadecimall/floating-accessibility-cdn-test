@@ -20,7 +20,7 @@
     .no-change { font-size: 16px !important; }
     .no-change ul { padding: 5px 5px 5px 20px !important; margin: 5px !important; }
     .no-change p { margin: 1px !important; }
-    .invert { mix-blend-mode: difference; }
+    .invert { mix-blend-mode: difference; background-color: white; }
     .grayscale { background-color: gray; mix-blend-mode: luminosity; }
     .reading-guide {
       position: fixed;
