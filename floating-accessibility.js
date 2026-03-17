@@ -46,18 +46,7 @@
     .a11y-btn-active { background: #0000ff !important; color: #fff !important; }
 
     /* ── Invert ── */
-    body.a11y-invert-active {
-      isolation: isolate;
-    }
-    #a11y-invert-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background-color: white;
-      mix-blend-mode: difference;
-      pointer-events: none;
-      z-index: 2147483640;
-    }
+    html.a11y-invert { filter: invert(1) !important; }
 
     /* ── Grayscale ── */
     html.a11y-grayscale { filter: grayscale(100%) !important; }
@@ -177,19 +166,8 @@
     $('a11y-dec-btn').addEventListener('click', () => changeTextSize(-2));
 
     // ─── Invert ───────────────────────────────────────────────────────────────
-    let invertOverlay = null;
     function setInvert(active) {
-        if (active) {
-            document.body.classList.add('a11y-invert-active');
-            if (!invertOverlay) {
-                invertOverlay = document.createElement('div');
-                invertOverlay.id = 'a11y-invert-overlay';
-                document.body.appendChild(invertOverlay);
-            }
-        } else {
-            document.body.classList.remove('a11y-invert-active');
-            if (invertOverlay) { invertOverlay.remove(); invertOverlay = null; }
-        }
+        html.classList.toggle('a11y-invert', active);
         active ? on('a11y-invert-btn') : off('a11y-invert-btn');
         S.isInverted = active;
         save('isInverted', active);
