@@ -45,7 +45,11 @@
     }
     .a11y-btn-active { background: #0000ff !important; color: #fff !important; }
 
-    #a11y-invert {
+    /* ── Invert ── */
+    body.a11y-invert-active {
+      isolation: isolate;
+    }
+    #a11y-invert-overlay {
       position: fixed;
       top: 0; left: 0;
       width: 100vw; height: 100vh;
@@ -176,12 +180,14 @@
     let invertOverlay = null;
     function setInvert(active) {
         if (active) {
+            document.body.classList.add('a11y-invert-active');
             if (!invertOverlay) {
                 invertOverlay = document.createElement('div');
                 invertOverlay.id = 'a11y-invert-overlay';
                 document.body.appendChild(invertOverlay);
             }
         } else {
+            document.body.classList.remove('a11y-invert-active');
             if (invertOverlay) { invertOverlay.remove(); invertOverlay = null; }
         }
         active ? on('a11y-invert-btn') : off('a11y-invert-btn');
