@@ -31,12 +31,12 @@
     .no-change ul { padding: 4px !important; margin: 0 !important; }
     .no-change p { margin: 1px !important; }
     #access-btn {
-      background-color: #ffffff !important;
+      background-color: #1a56db !important;
       border: none !important;
       border-radius: 6px !important;
       padding: 10px 12px !important;
       cursor: pointer;
-      color: #555 !important;
+      color: #fff !important;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -83,6 +83,10 @@
     }
     .float-accessibility ul li button.active i { color: #fff !important; }
 
+    body.invert {
+      mix-blend-mode: difference !important;
+      background-color: white !important;
+    }
     .grayscale { background-color: gray; mix-blend-mode: luminosity; }
     .reading-guide {
       position: fixed;
