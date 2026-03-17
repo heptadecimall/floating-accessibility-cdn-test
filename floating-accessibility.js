@@ -12,7 +12,7 @@
       width: auto;
       top: 30%;
       left: 0;
-      transition: all 0.3s linear;
+
       z-index: 10000;
       border: none;
       box-shadow: none;
@@ -31,8 +31,8 @@
     .no-change ul { padding: 4px !important; margin: 0 !important; }
     .no-change p { margin: 1px !important; }
     #access-btn {
-      background-color: transparent !important;
-      border: none !important;
+      background-color: #ffffff !important;
+      border: 1px solid #d0d0d0 !important;
       border-radius: 6px !important;
       padding: 6px 8px !important;
       cursor: pointer;
@@ -82,7 +82,7 @@
       color: #fff !important;
     }
     .float-accessibility ul li button.active i { color: #fff !important; }
-    html.invert {
+    body.invert {
       background-color: white;
       mix-blend-mode: difference;
     }
@@ -213,11 +213,11 @@
     // ─── Invert ───────────────────────────────────────────────────────────────
     window.invertColor = function () {
         if (isInverted) {
-            document.documentElement.classList.remove('invert');
+            document.body.classList.remove('invert');
             indicatorOff('invert-color-btn');
         } else {
             if (isGrayscale) window.toggleGrayscale();
-            document.documentElement.classList.add('invert');
+            document.body.classList.add('invert');
             indicatorOn('invert-color-btn');
         }
         isInverted = !isInverted;
@@ -349,7 +349,7 @@
     // ─── Restore state on load ────────────────────────────────────────────────
     function checkAccessibility() {
         if (isCursorBig) { isCursorBig = false; window.bigCursor(); }
-        if (isInverted) { document.documentElement.classList.add('invert'); indicatorOn('invert-color-btn'); }
+        if (isInverted) { document.body.classList.add('invert'); indicatorOn('invert-color-btn'); }
         if (isGrayscale) { document.body.classList.add('grayscale'); indicatorOn('toggle-grayscale-btn'); }
         window.speechSynthesis.cancel();
         setTimeout(() => {
