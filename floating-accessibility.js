@@ -10,7 +10,7 @@
       position: fixed;
       width: auto;
       top: 30%;
-      left: 0;
+      left: 8px;
       transition: all 0.3s linear;
       box-shadow: 0 4px 16px rgba(0,0,0,.15);
       z-index: 10000;
@@ -21,8 +21,8 @@
     .no-change ul { padding: 4px !important; margin: 0 !important; }
     .no-change p { margin: 1px !important; }
     #access-btn {
-      background-color: #ffffff !important;
-      border: 1px solid #e0e0e0 !important;
+      background-color: transparent !important;
+      border: none !important;
       border-radius: 6px !important;
       padding: 6px 8px !important;
       cursor: pointer;
@@ -32,7 +32,7 @@
       justify-content: center;
     }
     #access-btn i { color: #555 !important; font-size: 20px; }
-    #access-btn:hover { background-color: #f5f5f5 !important; }
+    #access-btn:hover { background-color: #f0f0f0 !important; }
     .a11y-menu-header {
       display: flex;
       justify-content: space-between;
@@ -74,7 +74,19 @@
       color: #fff !important;
     }
     .float-accessibility ul li button.active i { color: #fff !important; }
-    .invert { mix-blend-mode: difference; background-color: white; }
+    .invert::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background-color: white;
+      mix-blend-mode: difference;
+      pointer-events: none;
+      z-index: 9999;
+    }
+    body.invert {
+      isolation: isolate;
+    }
     .grayscale { background-color: gray; mix-blend-mode: luminosity; }
     .reading-guide {
       position: fixed;
