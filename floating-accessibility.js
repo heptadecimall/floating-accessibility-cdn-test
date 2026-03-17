@@ -1,8 +1,9 @@
 (function () {
-    // ─── Inject CSS ───────────────────────────────────────────────────────────
+
+    // ─── CSS ──────────────────────────────────────────────────────────────────
     const style = document.createElement('style');
     style.textContent = `
-    .float-accessibility {
+    #a11y-widget-root {
       background-color: #060270;
       border-radius: 5px;
       padding: 10px;
@@ -12,320 +13,282 @@
       left: 0;
       transition: all 0.3s linear;
       box-shadow: 2px 2px 8px 0px rgba(0,0,0,.4);
-      z-index: 10000;
+      z-index: 2147483647;
+      font-size: 14px !important;
+      line-height: 1.4 !important;
+      font-family: sans-serif !important;
     }
-    .float-accessibility p { color: white; margin: 0; }
-    .float-accessibility button { border-radius: 5px; }
-    .a11y-no-change { font-size: 16px !important; }
-    .a11y-no-change ul { padding: 5px 5px 5px 20px !important; margin: 5px !important; }
-    .a11y-no-change p { margin: 1px !important; }
-    .a11y-invert-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: white;
-      mix-blend-mode: difference;
-      pointer-events: none;
-      z-index: 9998;
+    #a11y-widget-root * {
+      box-sizing: border-box !important;
+      font-size: inherit !important;
+      line-height: inherit !important;
     }
-    html.a11y-grayscale, html.a11y-grayscale * {
-      filter: grayscale(100%) !important;
+    #a11y-widget-root p  { color: white; margin: 0; }
+    #a11y-widget-root ul { list-style: none; padding: 0; margin: 0; }
+    #a11y-widget-root li { margin: 8px 0; }
+    #a11y-widget-root button {
+      border-radius: 5px;
+      border: none;
+      padding: 5px 8px;
+      cursor: pointer !important;
+      width: 100%;
+      text-align: left;
+      background: #fff;
+      color: #000;
     }
-    html.a11y-big-cursor, html.a11y-big-cursor * {
-      cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACsAAABACAMAAAC0sH5rAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAhlQTFRFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6wjErwAAALN0Uk5TAF3I7um4PwGZ/P73b2L9gMSJA/WfBPCE+6QL8f9sCWPFEVD4zBTyRNsb8zvr4ST6MermLinfOPQc2Er5yvZWE79ksnEKrYGdjo2hBX2pCG67DVzDEFHORtc53iznMijd7DwZ0klZDw50B5vWAh4gTmZ+mrQn7yF5kKMM5JLVaU2P05RyW0w9gi8jPu2euRZty5XA5VV8FcHUIjfoNbyFzy3NBuMqrBiut6CrikhnVHVfhkXAEVr6AAAD5ElEQVR4nI2We0xOcRjHn0en9JZe3glvSbPl8m4Jb20My9w3STQr08xSxiZlQrOm4sWKhLmVuYTkVmMuuay1JJcYGi235tZCI5dh6MLr9/zOez/nvMf54/k+z+98zjnP7/b8DgKgeLWD2oXgjUiKP9RZP+zijoC/1d6MvTosnuCBn1XY3r9svg9+dM/6MNMD8RsFPfGdW1bL0tUhdnK4M6DZHatBYsGjzUxhX3ylzoIXvqc4EJvcs0E/mefbxnsZjE8UWT1LdKClZy9JQvCREjuiycqCPz4jMeB9dRb02EjSEX5XmQ17a4mC8CEX/1uy7Lh6BxY0/R6QROB1JVajscUhyL8fEFwtw4a8d2Lhr6GOxDy2Ssr6svmKcJwsA94k0Q6vcV2jnEWdU1toLZfxV/6DhbCbfP1PwApnNvK+lIWRVbSvYDKel7ABkt0TcYdPzzQ868jSvpCyMOoWh6djuQtrfCNhYUxzA0l0g33Z4egGeRbG3fhCEvO6zsYOaQEY/EmGhcinfNnNxlIr2/+LEgt6wxkSQ2iJOguTsIwkHovVWTZmJ0g0sQfUWfDr5BVDF7VfnYWo53yNGlta21VZmHHIkyRgahFgX1ZLtYIyCzPLOmglCf4v1Vk2HccIXoj/w8L3TrLJnDX3VoC6za4bQ+dDHduUsBRX75FhE9j9O7p3LxzPBW2SPBvVZ7vkG2l56NFdLofEba4tK082ubJJeJBE4/naiQxKqK4BFza68o94LA2/xowQHLcxi/rWeLeZbR1nNiW3S8jcTV7qcVbnzOszHF+O+Tmsea0lywK2fU07uL8ii5kNme0KbOht+n5ELO/X0jwWaCeXyrPGGjHVTQVcVmUyk7vckU08LbLhU9ZYmjY/vkDi1cYeDRu9U8qmC2tsbVvyuAygup2fImEzr13kacylJwo2ibdoVffwtddQHMYOH2HxoHQ+ZOfTt7ByrDWZKPq7npJdZbKzRioCIS84OnQRHEwlyp/fMy2j7Ctt9Q+LbQkZ0hIB5lK/MKyFGqIeUpmaUWZjddbRjqvnZ2AK1YL8XN4UX8RMIS6wsoFa8Wgf8VUscrMqmdlXe4n8vCWskAvTT1lZSB3IZlMoxASxIfCDF7N68W8lP5mZDa92W1n2+KX4w/dsvV1LUxz4m/sTy9l9Ye98O+t8ZVylv4J14nxl0HgvKFJi4WQSM8UryU0PYkMDR+IU2XLqt3nRWcjO8eNjVzJHkYVkKo6exaWt9Tw0hu9SZrO3MiN0WcPSWFBmF0cusQcd5Umf3bBwbp7Vi6nQ2/+VZNmj3olcD/lcLnRolmUhpl/orjfZTRXOP5j/ANS7NReqmWaqAAAAAElFTkSuQmCC") 0 0, auto !important;
+    #a11y-open-btn {
+      background: transparent !important;
+      border: none !important;
+      cursor: pointer !important;
+      width: auto !important;
+      padding: 0 !important;
     }
+    .a11y-btn-active { background: #0000ff !important; color: #fff !important; }
+
+    /* ── Invert: CSS filter on <html> is the only reliable cross-browser approach ── */
+    html.a11y-invert { filter: invert(1) hue-rotate(180deg) !important; }
+    /* Re-invert media so photos/videos look normal */
+    html.a11y-invert img,
+    html.a11y-invert video,
+    html.a11y-invert iframe { filter: invert(1) hue-rotate(180deg) !important; }
+    /* Re-invert the widget itself so it stays readable */
+    html.a11y-invert #a11y-widget-root { filter: invert(1) hue-rotate(180deg) !important; }
+
+    /* ── Grayscale ── */
+    html.a11y-grayscale { filter: grayscale(100%) !important; }
+
+    /* ── Big Cursor: inline SVG data URI — no external file, works everywhere ── */
+    html.a11y-big-cursor,
+    html.a11y-big-cursor * {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpolygon points='6,2 6,32 13,25 18,38 22,36 17,23 26,23' fill='black' stroke='white' stroke-width='2'/%3E%3C/svg%3E") 6 2, auto !important;
+    }
+
+    /* ── Reading guide ── */
     .a11y-reading-guide {
       position: fixed;
       width: 100%;
-      height: 2px;
-      background-color: red;
+      height: 3px;
+      background: red;
       pointer-events: none;
-      z-index: 10000;
+      z-index: 2147483646;
       display: none;
+      top: 0; left: 0;
     }
   `;
     document.head.appendChild(style);
 
-    // ─── Inject Bootstrap Icons (if not already loaded) ───────────────────────
+    // ─── Bootstrap Icons ─────────────────────────────────────────────────────
     if (!document.querySelector('link[href*="bootstrap-icons"]')) {
-        const iconLink = document.createElement('link');
-        iconLink.rel = 'stylesheet';
-        iconLink.href = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css';
-        document.head.appendChild(iconLink);
+        const l = document.createElement('link');
+        l.rel = 'stylesheet';
+        l.href = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css';
+        document.head.appendChild(l);
     }
 
-    // ─── Inject HTML ──────────────────────────────────────────────────────────
+    // ─── HTML ─────────────────────────────────────────────────────────────────
     const wrapper = document.createElement('div');
-    wrapper.className = 'float-accessibility a11y-no-change';
-    wrapper.setAttribute('id', 'a11y-widget-root');
+    wrapper.id = 'a11y-widget-root';
     wrapper.innerHTML = `
-    <button type="button" id="a11y-access-btn" style="background:transparent;border:none;cursor:pointer;">
-      <i class="bi bi-universal-access-circle" style="color:white;font-size:20px;"></i>
+    <button id="a11y-open-btn" title="Accessibility options">
+      <i class="bi bi-universal-access-circle" style="color:white;font-size:22px;display:block;"></i>
     </button>
-    <div id="a11y-access-menu" style="width:200px;display:none;">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <button id="a11y-close-btn" style="background:transparent;border:none;cursor:pointer;color:white;">
-          <i class="bi bi-x-circle"></i>
-        </button>
-        <p>Accessibility</p>
-        <button id="a11y-reset-btn" style="background:transparent;border:none;cursor:pointer;color:white;">
-          <i class="bi bi-arrow-clockwise"></i>
-        </button>
+    <div id="a11y-menu" style="display:none; width:190px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <span style="color:white;font-weight:bold;">Accessibility</span>
+        <span style="display:flex;gap:6px;">
+          <button id="a11y-reset-btn" title="Reset" style="width:auto;padding:3px 7px;background:transparent!important;color:white!important;">↺</button>
+          <button id="a11y-close-btn" title="Close" style="width:auto;padding:3px 7px;background:transparent!important;color:white!important;">✕</button>
+        </span>
       </div>
-      <ul style="list-style-type:none;background:transparent;padding:0;margin:0;">
-        ${[
-            ['a11y-inc-btn', 'bi-zoom-in', 'Increase Text'],
-            ['a11y-dec-btn', 'bi-zoom-out', 'Decrease Text'],
-            ['a11y-invert-btn', 'bi-droplet-half', 'Invert Color'],
-            ['a11y-underline-btn', 'bi-type-underline', 'Link Underline'],
-            ['a11y-grayscale-btn', 'bi-droplet', 'Grayscale'],
-            ['a11y-cursor-btn', 'bi-cursor', 'Big Cursor'],
-            ['a11y-guide-btn', 'bi-rulers', 'Reading Guide'],
-            ['a11y-tts-btn', 'bi-chat-left-text', 'Text to Speech'],
-            ['a11y-stt-btn', 'bi-mic-fill', 'Speech to Text'],
-        ].map(([id, icon, label]) => `
-          <li style="margin:10px 0;">
-            <button id="${id}" style="width:100%;padding:4px 8px;cursor:pointer;">
-              <i class="bi ${icon}"></i> ${label}
-            </button>
-          </li>
-        `).join('')}
+      <ul>
+        <li><button id="a11y-inc-btn">🔍+ Increase Text</button></li>
+        <li><button id="a11y-dec-btn">🔍− Decrease Text</button></li>
+        <li><button id="a11y-invert-btn">🌓 Invert Color</button></li>
+        <li><button id="a11y-underline-btn">U̲ Link Underline</button></li>
+        <li><button id="a11y-grayscale-btn">◑ Grayscale</button></li>
+        <li><button id="a11y-cursor-btn">↖ Big Cursor</button></li>
+        <li><button id="a11y-guide-btn">— Reading Guide</button></li>
+        <li><button id="a11y-tts-btn">🔊 Text to Speech</button></li>
+        <li><button id="a11y-stt-btn">🎤 Speech to Text</button></li>
       </ul>
     </div>
   `;
     document.body.appendChild(wrapper);
 
     // ─── State ────────────────────────────────────────────────────────────────
-    let textSize = parseFloat(localStorage.getItem('a11y_textSize')) || 0;
-    let isInverted = localStorage.getItem('a11y_isInverted') === 'true';
-    let isLinkUnderlined = localStorage.getItem('a11y_isLinkUnderlined') === 'true';
-    let isGrayscale = localStorage.getItem('a11y_isGrayscale') === 'true';
-    let isCursorBig = localStorage.getItem('a11y_isCursorBig') === 'true';
-    let guideEnabled = localStorage.getItem('a11y_guideEnabled') === 'true';
-    let isTextToSpeech = localStorage.getItem('a11y_isTextToSpeech') === 'true';
+    const S = {
+        textSize: parseFloat(localStorage.getItem('a11y_textSize')) || 0,
+        isInverted: localStorage.getItem('a11y_isInverted') === 'true',
+        isUnderlined: localStorage.getItem('a11y_isUnderlined') === 'true',
+        isGrayscale: localStorage.getItem('a11y_isGrayscale') === 'true',
+        isCursorBig: localStorage.getItem('a11y_isCursorBig') === 'true',
+        guideEnabled: localStorage.getItem('a11y_guideEnabled') === 'true',
+        isTTS: localStorage.getItem('a11y_isTTS') === 'true',
+    };
+
+    const html = document.documentElement;
     let guideLine = null;
 
     // ─── Helpers ──────────────────────────────────────────────────────────────
-    function isA11yEl(el) {
-        return el.closest('#a11y-widget-root');
-    }
+    const $ = id => document.getElementById(id);
+    const on = id => $(id) && $(id).classList.add('a11y-btn-active');
+    const off = id => $(id) && $(id).classList.remove('a11y-btn-active');
+    const save = (k, v) => localStorage.setItem('a11y_' + k, v);
+    const widget = el => !!el.closest('#a11y-widget-root');
 
-    function indicatorOn(id) {
-        const el = document.getElementById(id);
-        if (el) { el.style.background = 'blue'; el.style.color = 'white'; }
-    }
-
-    function indicatorOff(id) {
-        const el = document.getElementById(id);
-        if (el) { el.style.background = 'white'; el.style.color = 'black'; }
-    }
+    // ─── Menu ─────────────────────────────────────────────────────────────────
+    $('a11y-open-btn').addEventListener('click', () => {
+        $('a11y-open-btn').style.display = 'none';
+        $('a11y-menu').style.display = 'block';
+    });
+    $('a11y-close-btn').addEventListener('click', () => {
+        $('a11y-open-btn').style.display = '';
+        $('a11y-menu').style.display = 'none';
+    });
+    $('a11y-reset-btn').addEventListener('click', () => {
+        Object.keys(S).forEach(k => localStorage.removeItem('a11y_' + k));
+        location.reload();
+    });
 
     // ─── Text Size ────────────────────────────────────────────────────────────
     function changeTextSize(step) {
-        textSize += step;
+        S.textSize += step;
         document.querySelectorAll('*').forEach(el => {
-            if (isA11yEl(el)) return;
+            if (widget(el)) return;
             const fs = parseFloat(window.getComputedStyle(el).fontSize);
             if (fs) el.style.fontSize = (fs + step) + 'px';
         });
-        localStorage.setItem('a11y_textSize', textSize);
+        save('textSize', S.textSize);
     }
-
-    function setTextLoad() {
-        if (textSize === 0) return;
+    function restoreTextSize() {
+        if (!S.textSize) return;
         document.querySelectorAll('*').forEach(el => {
-            if (isA11yEl(el)) return;
+            if (widget(el)) return;
             const fs = parseFloat(window.getComputedStyle(el).fontSize);
-            if (fs) el.style.fontSize = (fs + textSize) + 'px';
+            if (fs) el.style.fontSize = (fs + S.textSize) + 'px';
         });
     }
+    $('a11y-inc-btn').addEventListener('click', () => changeTextSize(2));
+    $('a11y-dec-btn').addEventListener('click', () => changeTextSize(-2));
 
     // ─── Invert ───────────────────────────────────────────────────────────────
-    let invertOverlay = null;
-    function invertColor() {
-        if (isInverted) {
-            if (invertOverlay) { invertOverlay.remove(); invertOverlay = null; }
-            indicatorOff('a11y-invert-btn');
-        } else {
-            if (isGrayscale) toggleGrayscale();
-            invertOverlay = document.createElement('div');
-            invertOverlay.className = 'a11y-invert-overlay';
-            document.body.appendChild(invertOverlay);
-            indicatorOn('a11y-invert-btn');
-        }
-        isInverted = !isInverted;
-        localStorage.setItem('a11y_isInverted', isInverted);
+    function setInvert(active) {
+        html.classList.toggle('a11y-invert', active);
+        active ? on('a11y-invert-btn') : off('a11y-invert-btn');
+        S.isInverted = active;
+        save('isInverted', active);
     }
-
-    // ─── Link Underline ───────────────────────────────────────────────────────
-    function toggleLinkUnderline() {
-        document.querySelectorAll('a').forEach(el => {
-            el.style.textDecorationLine = isLinkUnderlined ? 'none' : 'underline';
-        });
-        isLinkUnderlined = !isLinkUnderlined;
-        isLinkUnderlined ? indicatorOn('a11y-underline-btn') : indicatorOff('a11y-underline-btn');
-        localStorage.setItem('a11y_isLinkUnderlined', isLinkUnderlined);
-    }
+    $('a11y-invert-btn').addEventListener('click', () => {
+        if (S.isGrayscale) setGrayscale(false);
+        setInvert(!S.isInverted);
+    });
 
     // ─── Grayscale ────────────────────────────────────────────────────────────
-    function toggleGrayscale() {
-        if (isGrayscale) {
-            document.documentElement.classList.remove('a11y-grayscale');
-            indicatorOff('a11y-grayscale-btn');
-        } else {
-            if (isInverted) invertColor();
-            document.documentElement.classList.add('a11y-grayscale');
-            indicatorOn('a11y-grayscale-btn');
-        }
-        isGrayscale = !isGrayscale;
-        localStorage.setItem('a11y_isGrayscale', isGrayscale);
+    function setGrayscale(active) {
+        html.classList.toggle('a11y-grayscale', active);
+        active ? on('a11y-grayscale-btn') : off('a11y-grayscale-btn');
+        S.isGrayscale = active;
+        save('isGrayscale', active);
     }
+    $('a11y-grayscale-btn').addEventListener('click', () => {
+        if (S.isInverted) setInvert(false);
+        setGrayscale(!S.isGrayscale);
+    });
+
+    // ─── Link Underline ───────────────────────────────────────────────────────
+    function setUnderline(active) {
+        document.querySelectorAll('a').forEach(el => {
+            el.style.textDecorationLine = active ? 'underline' : '';
+        });
+        active ? on('a11y-underline-btn') : off('a11y-underline-btn');
+        S.isUnderlined = active;
+        save('isUnderlined', active);
+    }
+    $('a11y-underline-btn').addEventListener('click', () => setUnderline(!S.isUnderlined));
 
     // ─── Big Cursor ───────────────────────────────────────────────────────────
-    function bigCursor() {
-        if (!isCursorBig) {
-            document.documentElement.classList.add('a11y-big-cursor');
-            isCursorBig = true;
-            indicatorOn('a11y-cursor-btn');
-        } else {
-            document.documentElement.classList.remove('a11y-big-cursor');
-            isCursorBig = false;
-            indicatorOff('a11y-cursor-btn');
-        }
-        localStorage.setItem('a11y_isCursorBig', isCursorBig);
+    function setCursor(active) {
+        html.classList.toggle('a11y-big-cursor', active);
+        active ? on('a11y-cursor-btn') : off('a11y-cursor-btn');
+        S.isCursorBig = active;
+        save('isCursorBig', active);
     }
+    $('a11y-cursor-btn').addEventListener('click', () => setCursor(!S.isCursorBig));
 
     // ─── Reading Guide ────────────────────────────────────────────────────────
-    function moveGuideLine(e) {
-        guideLine.style.top = (e.clientY + 1) + 'px';
-    }
-
-    function toggleReadingGuide() {
+    function moveGuide(e) { guideLine.style.top = (e.clientY + 1) + 'px'; }
+    function setGuide(active) {
         if (!guideLine) {
             guideLine = document.createElement('div');
             guideLine.className = 'a11y-reading-guide';
             document.body.appendChild(guideLine);
         }
-        guideEnabled = !guideEnabled;
-        guideLine.style.display = guideEnabled ? 'block' : 'none';
-        if (guideEnabled) {
-            document.addEventListener('mousemove', moveGuideLine);
-            indicatorOn('a11y-guide-btn');
-        } else {
-            document.removeEventListener('mousemove', moveGuideLine);
-            indicatorOff('a11y-guide-btn');
-        }
-        localStorage.setItem('a11y_guideEnabled', guideEnabled);
+        guideLine.style.display = active ? 'block' : 'none';
+        active
+            ? document.addEventListener('mousemove', moveGuide)
+            : document.removeEventListener('mousemove', moveGuide);
+        active ? on('a11y-guide-btn') : off('a11y-guide-btn');
+        S.guideEnabled = active;
+        save('guideEnabled', active);
     }
+    $('a11y-guide-btn').addEventListener('click', () => setGuide(!S.guideEnabled));
 
     // ─── Text to Speech ───────────────────────────────────────────────────────
-    function speak(text) {
-        const u = new SpeechSynthesisUtterance(text.trim());
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(u);
-    }
-
-    function handleSpeakableClick(e) {
+    function handleSpeak(e) {
         e.stopPropagation();
         const text = e.currentTarget.textContent.trim();
-        if (text) speak(text);
+        if (!text) return;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
     }
-
-    function applySpeakable() {
-        if (!isTextToSpeech) {
+    function setTTS(active) {
+        if (active) {
             document.querySelectorAll('*').forEach(el => {
-                if (isA11yEl(el) || el.dataset.a11ySpeakable) return;
-                el.dataset.a11ySpeakable = true;
-                el.addEventListener('click', handleSpeakableClick);
+                if (widget(el) || el.dataset.a11ySpeak) return;
+                el.dataset.a11ySpeak = '1';
+                el.addEventListener('click', handleSpeak);
             });
-            isTextToSpeech = true;
-            indicatorOn('a11y-tts-btn');
+            on('a11y-tts-btn');
         } else {
-            document.querySelectorAll('[data-a11y-speakable]').forEach(el => {
-                delete el.dataset.a11ySpeakable;
-                el.removeEventListener('click', handleSpeakableClick);
+            document.querySelectorAll('[data-a11y-speak]').forEach(el => {
+                delete el.dataset.a11ySpeak;
+                el.removeEventListener('click', handleSpeak);
             });
             window.speechSynthesis.cancel();
-            isTextToSpeech = false;
-            indicatorOff('a11y-tts-btn');
+            off('a11y-tts-btn');
         }
-        localStorage.setItem('a11y_isTextToSpeech', isTextToSpeech);
+        S.isTTS = active;
+        save('isTTS', active);
     }
+    $('a11y-tts-btn').addEventListener('click', () => setTTS(!S.isTTS));
 
     // ─── Speech to Text ───────────────────────────────────────────────────────
-    function startRecognition() {
+    $('a11y-stt-btn').addEventListener('click', () => {
         const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SR) { alert('Speech recognition not supported in this browser.'); return; }
         const r = new SR();
-        r.lang = 'en-US';
-        r.interimResults = false;
-        r.maxAlternatives = 1;
-        indicatorOn('a11y-stt-btn');
-        r.onresult = (e) => {
-            const transcript = e.results[0][0].transcript;
+        r.lang = 'en-US'; r.interimResults = false; r.maxAlternatives = 1;
+        on('a11y-stt-btn');
+        r.onresult = e => {
             const focused = document.activeElement;
-            if (focused && (focused.tagName === 'INPUT' || focused.tagName === 'TEXTAREA')) {
-                focused.value = transcript;
-            }
-            indicatorOff('a11y-stt-btn');
+            if (focused && (focused.tagName === 'INPUT' || focused.tagName === 'TEXTAREA'))
+                focused.value = e.results[0][0].transcript;
+            off('a11y-stt-btn');
         };
-        r.onerror = () => indicatorOff('a11y-stt-btn');
+        r.onerror = () => off('a11y-stt-btn');
         r.start();
-    }
-
-    // ─── Reset ────────────────────────────────────────────────────────────────
-    function resetAndReload() {
-        ['a11y_textSize', 'a11y_isInverted', 'a11y_isLinkUnderlined',
-            'a11y_isGrayscale', 'a11y_isCursorBig', 'a11y_guideEnabled', 'a11y_isTextToSpeech']
-            .forEach(k => localStorage.removeItem(k));
-        location.reload();
-    }
-
-    // ─── Menu Toggle ─────────────────────────────────────────────────────────
-    document.getElementById('a11y-access-btn').addEventListener('click', () => {
-        document.getElementById('a11y-access-btn').style.display = 'none';
-        document.getElementById('a11y-access-menu').style.display = 'block';
-    });
-    document.getElementById('a11y-close-btn').addEventListener('click', () => {
-        document.getElementById('a11y-access-btn').style.display = 'block';
-        document.getElementById('a11y-access-menu').style.display = 'none';
     });
 
-    // ─── Wire up buttons ──────────────────────────────────────────────────────
-    document.getElementById('a11y-inc-btn').addEventListener('click', () => changeTextSize(2));
-    document.getElementById('a11y-dec-btn').addEventListener('click', () => changeTextSize(-2));
-    document.getElementById('a11y-invert-btn').addEventListener('click', invertColor);
-    document.getElementById('a11y-underline-btn').addEventListener('click', toggleLinkUnderline);
-    document.getElementById('a11y-grayscale-btn').addEventListener('click', toggleGrayscale);
-    document.getElementById('a11y-cursor-btn').addEventListener('click', bigCursor);
-    document.getElementById('a11y-guide-btn').addEventListener('click', toggleReadingGuide);
-    document.getElementById('a11y-tts-btn').addEventListener('click', applySpeakable);
-    document.getElementById('a11y-stt-btn').addEventListener('click', startRecognition);
-    document.getElementById('a11y-reset-btn').addEventListener('click', resetAndReload);
-
-    // ─── Restore state on load ────────────────────────────────────────────────
-    (function restoreState() {
-        if (isInverted) {
-            invertOverlay = document.createElement('div');
-            invertOverlay.className = 'a11y-invert-overlay';
-            document.body.appendChild(invertOverlay);
-            indicatorOn('a11y-invert-btn');
-        }
-        if (isGrayscale) {
-            document.documentElement.classList.add('a11y-grayscale');
-            indicatorOn('a11y-grayscale-btn');
-        }
-        if (isCursorBig) {
-            document.documentElement.classList.add('a11y-big-cursor');
-            indicatorOn('a11y-cursor-btn');
-        }
-        if (guideEnabled) { guideEnabled = false; toggleReadingGuide(); }
-        window.speechSynthesis.cancel();
-        setTimeout(() => {
-            if (isTextToSpeech) { isTextToSpeech = false; applySpeakable(); }
-            if (isLinkUnderlined) { isLinkUnderlined = false; toggleLinkUnderline(); }
-        }, 500);
-        setTextLoad();
-    })();
+    // ─── Restore saved state on load ─────────────────────────────────────────
+    if (S.isInverted) setInvert(true);
+    if (S.isGrayscale) setGrayscale(true);
+    if (S.isCursorBig) setCursor(true);
+    if (S.guideEnabled) setGuide(true);
+    window.speechSynthesis && window.speechSynthesis.cancel();
+    setTimeout(() => {
+        if (S.isTTS) setTTS(true);
+        if (S.isUnderlined) setUnderline(true);
+        restoreTextSize();
+    }, 300);
 
 })();
