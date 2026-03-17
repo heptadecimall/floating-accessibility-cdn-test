@@ -141,6 +141,8 @@
         <li class="no-change" style="margin:10px 0"><button class="no-change" style="width:100%;" type="button" id="text-to-speech-btn" onclick="applySpeakable()"><i class="bi bi-chat-left-text"></i> Text to Speech</button></li>
         <li class="no-change" style="margin:10px 0"><button class="no-change" style="width:100%;" type="button" id="voice-recog-btn" onclick="startRecognition()"><i class="bi bi-mic-fill"></i> Speech to Text</button></li>
       </ul>
+        <div class="no-change" style="margin-top:10px;padding:8px;border-radius:6px;background:#1111;text-align:center;font-size:10px;color:#888;">Developed by <a href="#" class="no-change" style="color:#555;text-decoration:none;font-weight:600;">Infinite Logix System PLT</a>
+        </div>
     </div>
   `;
     document.body.appendChild(wrapper);
