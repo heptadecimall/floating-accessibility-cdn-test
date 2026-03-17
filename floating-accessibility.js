@@ -57,10 +57,10 @@
     /* ── Grayscale ── */
     html.a11y-grayscale { filter: grayscale(100%) !important; }
 
-    /* ── Big Cursor: inline SVG data URI — no external file, works everywhere ── */
+    /* ── Big Cursor ── */
     html.a11y-big-cursor,
     html.a11y-big-cursor * {
-      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpolygon points='6,2 6,32 13,25 18,38 22,36 17,23 26,23' fill='black' stroke='white' stroke-width='2'/%3E%3C/svg%3E") 6 2, auto !important;
+      cursor: url("big-cursor.png") 0 0, auto !important;
     }
 
     /* ── Reading guide ── */
