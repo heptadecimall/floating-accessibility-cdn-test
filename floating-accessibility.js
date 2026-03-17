@@ -3,18 +3,28 @@
     // ─── Inject CSS ───────────────────────────────────────────────────────────
     const style = document.createElement('style');
     style.textContent = `
+    /* collapsed state - no bg, no border, no gap */
     .float-accessibility {
-      background-color: #ffffff;
+      background-color: transparent;
       border-radius: 8px;
-      padding: 6px;
+      padding: 0;
       position: fixed;
       width: auto;
       top: 30%;
-      left: 8px;
+      left: 0;
       transition: all 0.3s linear;
-      box-shadow: 0 4px 16px rgba(0,0,0,.15);
       z-index: 10000;
-      border: 1px solid #e0e0e0;
+      border: none;
+      box-shadow: none;
+    }
+    /* open state - white bg, border, gap */
+    .float-accessibility.menu-open {
+      background-color: #ffffff;
+      padding: 6px;
+      left: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.15);
+      border: 1px solid #d0d0d0;
+      border-radius: 8px;
     }
     .float-accessibility p { color: #555; margin: 0; }
     .no-change { font-size: 14px !important; }
@@ -32,7 +42,6 @@
       justify-content: center;
     }
     #access-btn i { color: #555 !important; font-size: 20px; }
-
     .a11y-menu-header {
       display: flex;
       justify-content: space-between;
@@ -50,7 +59,6 @@
       padding: 2px 5px !important;
       border-radius: 4px !important;
     }
-
     .a11y-menu-header i { color: #888 !important; }
     .float-accessibility ul li button {
       width: 100%;
@@ -68,13 +76,13 @@
       transition: background 0.15s;
     }
     .float-accessibility ul li button i { color: #888 !important; font-size: 15px; }
-
+    .float-accessibility ul li button:hover { background: #f5f5f5 !important; }
     .float-accessibility ul li button.active {
       background: #1a56db !important;
       color: #fff !important;
     }
     .float-accessibility ul li button.active i { color: #fff !important; }
-    .invert {
+    html.invert {
       background-color: white;
       mix-blend-mode: difference;
     }
@@ -143,11 +151,13 @@
     window.showAccessMenu = function () {
         document.getElementById('access-btn').style.display = 'none';
         document.getElementById('access-menu').style.display = 'block';
+        document.querySelector('.float-accessibility').classList.add('menu-open');
     };
 
     window.closeAccessMenu = function () {
         document.getElementById('access-btn').style.display = 'block';
         document.getElementById('access-menu').style.display = 'none';
+        document.querySelector('.float-accessibility').classList.remove('menu-open');
     };
 
     window.resetAndReload = function () {
