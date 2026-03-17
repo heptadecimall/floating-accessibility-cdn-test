@@ -32,7 +32,7 @@
       justify-content: center;
     }
     #access-btn i { color: #555 !important; font-size: 20px; }
-    #access-btn:hover { background-color: #f0f0f0 !important; }
+
     .a11y-menu-header {
       display: flex;
       justify-content: space-between;
@@ -50,7 +50,7 @@
       padding: 2px 5px !important;
       border-radius: 4px !important;
     }
-    .a11y-menu-header button:hover { background: #f0f0f0 !important; }
+
     .a11y-menu-header i { color: #888 !important; }
     .float-accessibility ul li button {
       width: 100%;
@@ -68,24 +68,15 @@
       transition: background 0.15s;
     }
     .float-accessibility ul li button i { color: #888 !important; font-size: 15px; }
-    .float-accessibility ul li button:hover { background: #f5f5f5 !important; }
+
     .float-accessibility ul li button.active {
       background: #1a56db !important;
       color: #fff !important;
     }
     .float-accessibility ul li button.active i { color: #fff !important; }
-    .invert::before {
-      content: '';
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
+    .invert {
       background-color: white;
       mix-blend-mode: difference;
-      pointer-events: none;
-      z-index: 9999;
-    }
-    body.invert {
-      isolation: isolate;
     }
     .grayscale { background-color: gray; mix-blend-mode: luminosity; }
     .reading-guide {
@@ -187,8 +178,12 @@
         textSize += step;
         document.querySelectorAll('*').forEach(el => {
             if (isNoChange(el)) return;
-            const fs = parseFloat(window.getComputedStyle(el).fontSize);
-            if (fs) el.style.fontSize = (fs + step) + 'px';
+            // store original font size on first touch
+            if (!el.dataset.origFs) {
+                el.dataset.origFs = parseFloat(window.getComputedStyle(el).fontSize);
+            }
+            const orig = parseFloat(el.dataset.origFs);
+            if (orig) el.style.fontSize = (orig + textSize) + 'px';
         });
         localStorage.setItem('a11y_textSize', textSize);
     }
@@ -197,19 +192,22 @@
         if (textSize === 0) return;
         document.querySelectorAll('*').forEach(el => {
             if (isNoChange(el)) return;
-            const fs = parseFloat(window.getComputedStyle(el).fontSize);
-            if (fs) el.style.fontSize = (fs + textSize) + 'px';
+            if (!el.dataset.origFs) {
+                el.dataset.origFs = parseFloat(window.getComputedStyle(el).fontSize);
+            }
+            const orig = parseFloat(el.dataset.origFs);
+            if (orig) el.style.fontSize = (orig + textSize) + 'px';
         });
     }
 
     // ─── Invert ───────────────────────────────────────────────────────────────
     window.invertColor = function () {
         if (isInverted) {
-            document.body.classList.remove('invert');
+            document.documentElement.classList.remove('invert');
             indicatorOff('invert-color-btn');
         } else {
             if (isGrayscale) window.toggleGrayscale();
-            document.body.classList.add('invert');
+            document.documentElement.classList.add('invert');
             indicatorOn('invert-color-btn');
         }
         isInverted = !isInverted;
@@ -341,7 +339,7 @@
     // ─── Restore state on load ────────────────────────────────────────────────
     function checkAccessibility() {
         if (isCursorBig) { isCursorBig = false; window.bigCursor(); }
-        if (isInverted) { document.body.classList.add('invert'); indicatorOn('invert-color-btn'); }
+        if (isInverted) { document.documentElement.classList.add('invert'); indicatorOn('invert-color-btn'); }
         if (isGrayscale) { document.body.classList.add('grayscale'); indicatorOn('toggle-grayscale-btn'); }
         window.speechSynthesis.cancel();
         setTimeout(() => {
