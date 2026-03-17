@@ -1,72 +1,35 @@
 (function () {
 
-    // ─── CSS ──────────────────────────────────────────────────────────────────
+    // ─── Inject CSS ───────────────────────────────────────────────────────────
     const style = document.createElement('style');
     style.textContent = `
-    #a11y-widget-root {
+    .float-accessibility {
       background-color: #060270;
       border-radius: 5px;
+      outline-color: #060606;
       padding: 10px;
       position: fixed;
-      width: auto;
+      width: 35px;
       top: 30%;
-      left: 0;
       transition: all 0.3s linear;
       box-shadow: 2px 2px 8px 0px rgba(0,0,0,.4);
-      z-index: 2147483647;
-      font-size: 14px !important;
-      line-height: 1.4 !important;
-      font-family: sans-serif !important;
+      z-index: 10000;
     }
-    #a11y-widget-root * {
-      box-sizing: border-box !important;
-      font-size: inherit !important;
-      line-height: inherit !important;
-    }
-    #a11y-widget-root p  { color: white; margin: 0; }
-    #a11y-widget-root ul { list-style: none; padding: 0; margin: 0; }
-    #a11y-widget-root li { margin: 8px 0; }
-    #a11y-widget-root button {
-      border-radius: 5px;
-      border: none;
-      padding: 5px 8px;
-      cursor: pointer !important;
-      width: 100%;
-      text-align: left;
-      background: #fff;
-      color: #000;
-    }
-    #a11y-open-btn {
-      background: transparent !important;
-      border: none !important;
-      cursor: pointer !important;
-      width: auto !important;
-      padding: 0 !important;
-    }
-    .a11y-btn-active { background: #0000ff !important; color: #fff !important; }
-
-    /* ── Invert ── */
-    html.a11y-invert { filter: invert(1) !important; }
-
-    /* ── Grayscale ── */
-    html.a11y-grayscale { filter: grayscale(100%) !important; }
-
-    /* ── Big Cursor ── */
-    html.a11y-big-cursor,
-    html.a11y-big-cursor * {
-      cursor: url("big-cursor.png") 0 0, auto !important;
-    }
-
-    /* ── Reading guide ── */
-    .a11y-reading-guide {
+    .float-accessibility p { color: white; }
+    .float-accessibility button { border-radius: 5px; border: #ff0000; }
+    .no-change { font-size: 16px !important; }
+    .no-change ul { padding: 5px 5px 5px 20px !important; margin: 5px !important; }
+    .no-change p { margin: 1px !important; }
+    .invert { mix-blend-mode: difference; }
+    .grayscale { background-color: gray; mix-blend-mode: luminosity; }
+    .reading-guide {
       position: fixed;
       width: 100%;
-      height: 3px;
-      background: red;
+      height: 2px;
+      background-color: red;
       pointer-events: none;
-      z-index: 2147483646;
+      z-index: 10000;
       display: none;
-      top: 0; left: 0;
     }
   `;
     document.head.appendChild(style);
@@ -79,210 +42,248 @@
         document.head.appendChild(l);
     }
 
-    // ─── HTML ─────────────────────────────────────────────────────────────────
+    // ─── Inject HTML ─────────────────────────────────────────────────────────
     const wrapper = document.createElement('div');
-    wrapper.id = 'a11y-widget-root';
+    wrapper.className = 'float-accessibility no-change';
+    wrapper.style.width = 'auto';
     wrapper.innerHTML = `
-    <button id="a11y-open-btn" title="Accessibility options">
-      <i class="bi bi-universal-access-circle" style="color:white;font-size:22px;display:block;"></i>
+    <button type="button" id="access-btn" onclick="showAccessMenu()" style="background-color:transparent;border:none;">
+      <i class="bi bi-universal-access-circle no-change" style="color:white;"></i>
     </button>
-    <div id="a11y-menu" style="display:none; width:190px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-        <span style="color:white;font-weight:bold;">Accessibility</span>
-        <span style="display:flex;gap:6px;">
-          <button id="a11y-reset-btn" title="Reset" style="width:auto;padding:3px 7px;background:transparent!important;color:white!important;">↺</button>
-          <button id="a11y-close-btn" title="Close" style="width:auto;padding:3px 7px;background:transparent!important;color:white!important;">✕</button>
-        </span>
+    <div class="accessMenu no-change" id="access-menu" style="width:200px;display:none;">
+      <div class="menu-action no-change" style="display:flex;justify-content:space-between;">
+        <button onclick="closeAccessMenu()" style="background-color:transparent;color:white;border:none;"><i class="bi bi-x-circle no-change"></i></button>
+        <p>Accessibility</p>
+        <button onclick="resetAndReload()" class="no-change" style="background-color:transparent;color:white;border:none;"><i class="bi bi-arrow-clockwise no-change"></i></button>
       </div>
-      <ul>
-        <li><button id="a11y-inc-btn">🔍+ Increase Text</button></li>
-        <li><button id="a11y-dec-btn">🔍− Decrease Text</button></li>
-        <li><button id="a11y-invert-btn">🌓 Invert Color</button></li>
-        <li><button id="a11y-underline-btn">U̲ Link Underline</button></li>
-        <li><button id="a11y-grayscale-btn">◑ Grayscale</button></li>
-        <li><button id="a11y-cursor-btn">↖ Big Cursor</button></li>
-        <li><button id="a11y-guide-btn">— Reading Guide</button></li>
-        <li><button id="a11y-tts-btn">🔊 Text to Speech</button></li>
-        <li><button id="a11y-stt-btn">🎤 Speech to Text</button></li>
+      <ul class="no-change" style="list-style-type:none;background-color:transparent;">
+        <li class="no-change" style="margin:10px 0"><button class="no-change" style="width:100%;" type="button" id="inc-btn" onclick="incTextSize()"><i class="bi bi-zoom-in"></i> Increase Text</button></li>
+        <li class="no-change" style="margin:10px 0"><button class="no-change" style="width:100%;" type="button" id="dec-btn" onclick="decTextSize()"><i class="bi bi-zoom-out"></i> Decrease Text</button></li>
+        <li class="no-change" style="margin:10px 0"><button class="no-change" style="width:100%;" type="button" id="invert-color-btn" onclick="invertColor()"><i class="bi bi-droplet-half"></i> Invert Color</button></li>
+        <li class="no-change" style="margin:10px 0"><button class="no-change" style="width:100%;" type="button" id="toggle-link-underline-btn" onclick="toggleLinkUnderline()"><i class="bi bi-type-underline"></i> Link Underline</button></li>
+        <li class="no-change" style="margin:10px 0"><button class="no-change" style="width:100%;" type="button" id="toggle-grayscale-btn" onclick="toggleGrayscale()"><i class="bi bi-droplet"></i> Grayscale</button></li>
+        <li class="no-change" style="margin:10px 0"><button class="no-change" style="width:100%;" type="button" id="big-cursor-btn" onclick="bigCursor()"><i class="bi bi-cursor"></i> Big Cursor</button></li>
+        <li class="no-change" style="margin:10px 0"><button class="no-change" style="width:100%;" type="button" id="read-guide-btn" onclick="toggleReadingGuide()"><i class="bi bi-rulers"></i> Reading Guide</button></li>
+        <li class="no-change" style="margin:10px 0"><button class="no-change" style="width:100%;" type="button" id="text-to-speech-btn" onclick="applySpeakable()"><i class="bi bi-chat-left-text"></i> Text to Speech</button></li>
+        <li class="no-change" style="margin:10px 0"><button class="no-change" style="width:100%;" type="button" id="voice-recog-btn" onclick="startRecognition()"><i class="bi bi-mic-fill"></i> Speech to Text</button></li>
       </ul>
     </div>
   `;
     document.body.appendChild(wrapper);
 
     // ─── State ────────────────────────────────────────────────────────────────
-    const S = {
-        textSize: parseFloat(localStorage.getItem('a11y_textSize')) || 0,
-        isInverted: localStorage.getItem('a11y_isInverted') === 'true',
-        isUnderlined: localStorage.getItem('a11y_isUnderlined') === 'true',
-        isGrayscale: localStorage.getItem('a11y_isGrayscale') === 'true',
-        isCursorBig: localStorage.getItem('a11y_isCursorBig') === 'true',
-        guideEnabled: localStorage.getItem('a11y_guideEnabled') === 'true',
-        isTTS: localStorage.getItem('a11y_isTTS') === 'true',
+    let textSize = parseFloat(localStorage.getItem('a11y_textSize')) || 0;
+    let isInverted = localStorage.getItem('a11y_isInverted') === 'true';
+    let isLinkUnderlined = localStorage.getItem('a11y_isLinkUnderlined') === 'true';
+    let isGrayscale = localStorage.getItem('a11y_isGrayscale') === 'true';
+    let isCursorBig = localStorage.getItem('a11y_isCursorBig') === 'true';
+    let guideEnabled = localStorage.getItem('a11y_guideEnabled') === 'true';
+    let isTextToSpeech = localStorage.getItem('a11y_isTextToSpeech') === 'true';
+
+    // ─── Expose functions to window (onclick= attributes need this) ───────────
+    window.showAccessMenu = function () {
+        document.getElementById('access-btn').style.display = 'none';
+        document.getElementById('access-menu').style.display = 'block';
     };
 
-    const html = document.documentElement;
-    let guideLine = null;
+    window.closeAccessMenu = function () {
+        document.getElementById('access-btn').style.display = 'block';
+        document.getElementById('access-menu').style.display = 'none';
+    };
 
-    // ─── Helpers ──────────────────────────────────────────────────────────────
-    const $ = id => document.getElementById(id);
-    const on = id => $(id) && $(id).classList.add('a11y-btn-active');
-    const off = id => $(id) && $(id).classList.remove('a11y-btn-active');
-    const save = (k, v) => localStorage.setItem('a11y_' + k, v);
-    const widget = el => !!el.closest('#a11y-widget-root');
-
-    // ─── Menu ─────────────────────────────────────────────────────────────────
-    $('a11y-open-btn').addEventListener('click', () => {
-        $('a11y-open-btn').style.display = 'none';
-        $('a11y-menu').style.display = 'block';
-    });
-    $('a11y-close-btn').addEventListener('click', () => {
-        $('a11y-open-btn').style.display = '';
-        $('a11y-menu').style.display = 'none';
-    });
-    $('a11y-reset-btn').addEventListener('click', () => {
-        Object.keys(S).forEach(k => localStorage.removeItem('a11y_' + k));
+    window.resetAndReload = function () {
+        ['a11y_textSize', 'a11y_isInverted', 'a11y_isLinkUnderlined',
+            'a11y_isGrayscale', 'a11y_isCursorBig', 'a11y_guideEnabled', 'a11y_isTextToSpeech']
+            .forEach(k => localStorage.removeItem(k));
         location.reload();
-    });
+    };
+
+    function indicatorOn(id) {
+        const el = document.getElementById(id);
+        if (el) { el.style.background = 'blue'; el.style.color = 'white'; }
+    }
+    function indicatorOff(id) {
+        const el = document.getElementById(id);
+        if (el) { el.style.background = 'white'; el.style.color = 'black'; }
+    }
+
+    function isNoChange(el) {
+        return el.classList.contains('no-change') || el.closest('.no-change');
+    }
 
     // ─── Text Size ────────────────────────────────────────────────────────────
+    window.incTextSize = function () { changeTextSize(2); };
+    window.decTextSize = function () { changeTextSize(-2); };
+
     function changeTextSize(step) {
-        S.textSize += step;
+        textSize += step;
         document.querySelectorAll('*').forEach(el => {
-            if (widget(el)) return;
+            if (isNoChange(el)) return;
             const fs = parseFloat(window.getComputedStyle(el).fontSize);
             if (fs) el.style.fontSize = (fs + step) + 'px';
         });
-        save('textSize', S.textSize);
+        localStorage.setItem('a11y_textSize', textSize);
     }
-    function restoreTextSize() {
-        if (!S.textSize) return;
+
+    function setTextLoad() {
+        if (textSize === 0) return;
         document.querySelectorAll('*').forEach(el => {
-            if (widget(el)) return;
+            if (isNoChange(el)) return;
             const fs = parseFloat(window.getComputedStyle(el).fontSize);
-            if (fs) el.style.fontSize = (fs + S.textSize) + 'px';
+            if (fs) el.style.fontSize = (fs + textSize) + 'px';
         });
     }
-    $('a11y-inc-btn').addEventListener('click', () => changeTextSize(2));
-    $('a11y-dec-btn').addEventListener('click', () => changeTextSize(-2));
 
     // ─── Invert ───────────────────────────────────────────────────────────────
-    function setInvert(active) {
-        html.classList.toggle('a11y-invert', active);
-        active ? on('a11y-invert-btn') : off('a11y-invert-btn');
-        S.isInverted = active;
-        save('isInverted', active);
-    }
-    $('a11y-invert-btn').addEventListener('click', () => {
-        if (S.isGrayscale) setGrayscale(false);
-        setInvert(!S.isInverted);
-    });
-
-    // ─── Grayscale ────────────────────────────────────────────────────────────
-    function setGrayscale(active) {
-        html.classList.toggle('a11y-grayscale', active);
-        active ? on('a11y-grayscale-btn') : off('a11y-grayscale-btn');
-        S.isGrayscale = active;
-        save('isGrayscale', active);
-    }
-    $('a11y-grayscale-btn').addEventListener('click', () => {
-        if (S.isInverted) setInvert(false);
-        setGrayscale(!S.isGrayscale);
-    });
+    window.invertColor = function () {
+        if (isInverted) {
+            document.body.classList.remove('invert');
+            indicatorOff('invert-color-btn');
+        } else {
+            if (isGrayscale) window.toggleGrayscale();
+            document.body.classList.add('invert');
+            indicatorOn('invert-color-btn');
+        }
+        isInverted = !isInverted;
+        localStorage.setItem('a11y_isInverted', isInverted);
+    };
 
     // ─── Link Underline ───────────────────────────────────────────────────────
-    function setUnderline(active) {
-        document.querySelectorAll('a').forEach(el => {
-            el.style.textDecorationLine = active ? 'underline' : '';
-        });
-        active ? on('a11y-underline-btn') : off('a11y-underline-btn');
-        S.isUnderlined = active;
-        save('isUnderlined', active);
-    }
-    $('a11y-underline-btn').addEventListener('click', () => setUnderline(!S.isUnderlined));
+    window.toggleLinkUnderline = function () {
+        if (isLinkUnderlined) {
+            document.querySelectorAll('a').forEach(el => el.style.textDecorationLine = 'none');
+            isLinkUnderlined = false;
+            indicatorOff('toggle-link-underline-btn');
+        } else {
+            document.querySelectorAll('a').forEach(el => el.style.textDecorationLine = 'underline');
+            isLinkUnderlined = true;
+            indicatorOn('toggle-link-underline-btn');
+        }
+        localStorage.setItem('a11y_isLinkUnderlined', isLinkUnderlined);
+    };
+
+    // ─── Grayscale ────────────────────────────────────────────────────────────
+    window.toggleGrayscale = function () {
+        if (isGrayscale) {
+            document.body.classList.remove('grayscale');
+            indicatorOff('toggle-grayscale-btn');
+        } else {
+            if (isInverted) window.invertColor();
+            document.body.classList.add('grayscale');
+            indicatorOn('toggle-grayscale-btn');
+        }
+        isGrayscale = !isGrayscale;
+        localStorage.setItem('a11y_isGrayscale', isGrayscale);
+    };
 
     // ─── Big Cursor ───────────────────────────────────────────────────────────
-    function setCursor(active) {
-        html.classList.toggle('a11y-big-cursor', active);
-        active ? on('a11y-cursor-btn') : off('a11y-cursor-btn');
-        S.isCursorBig = active;
-        save('isCursorBig', active);
-    }
-    $('a11y-cursor-btn').addEventListener('click', () => setCursor(!S.isCursorBig));
+    window.bigCursor = function () {
+        const allElements = document.querySelectorAll('*');
+        if (!isCursorBig) {
+            allElements.forEach(el => {
+                el.style.cursor = 'url(https://cdn.jsdelivr.net/gh/heptadecimall/floating-accessibility-cdn-test/big-cursor.png), auto';
+            });
+            isCursorBig = true;
+            indicatorOn('big-cursor-btn');
+        } else {
+            allElements.forEach(el => { el.style.cursor = ''; });
+            isCursorBig = false;
+            indicatorOff('big-cursor-btn');
+        }
+        localStorage.setItem('a11y_isCursorBig', isCursorBig);
+    };
 
     // ─── Reading Guide ────────────────────────────────────────────────────────
-    function moveGuide(e) { guideLine.style.top = (e.clientY + 1) + 'px'; }
-    function setGuide(active) {
+    let guideLine;
+    window.toggleReadingGuide = function () {
         if (!guideLine) {
             guideLine = document.createElement('div');
-            guideLine.className = 'a11y-reading-guide';
+            guideLine.className = 'reading-guide';
             document.body.appendChild(guideLine);
         }
-        guideLine.style.display = active ? 'block' : 'none';
-        active
-            ? document.addEventListener('mousemove', moveGuide)
-            : document.removeEventListener('mousemove', moveGuide);
-        active ? on('a11y-guide-btn') : off('a11y-guide-btn');
-        S.guideEnabled = active;
-        save('guideEnabled', active);
+        guideEnabled = !guideEnabled;
+        guideLine.style.display = guideEnabled ? 'block' : 'none';
+        if (guideEnabled) {
+            document.addEventListener('mousemove', moveGuideLine);
+            indicatorOn('read-guide-btn');
+        } else {
+            document.removeEventListener('mousemove', moveGuideLine);
+            indicatorOff('read-guide-btn');
+        }
+        localStorage.setItem('a11y_guideEnabled', guideEnabled);
+    };
+
+    function moveGuideLine(e) {
+        guideLine.style.top = (e.clientY + 1) + 'px';
     }
-    $('a11y-guide-btn').addEventListener('click', () => setGuide(!S.guideEnabled));
 
     // ─── Text to Speech ───────────────────────────────────────────────────────
-    function handleSpeak(e) {
+    function speak(text) {
+        const u = new SpeechSynthesisUtterance(text.trim());
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(u);
+    }
+
+    function handleSpeakableClick(e) {
         e.stopPropagation();
         const text = e.currentTarget.textContent.trim();
-        if (!text) return;
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+        if (text) speak(text);
     }
-    function setTTS(active) {
-        if (active) {
+
+    window.applySpeakable = function () {
+        if (!isTextToSpeech) {
             document.querySelectorAll('*').forEach(el => {
-                if (widget(el) || el.dataset.a11ySpeak) return;
-                el.dataset.a11ySpeak = '1';
-                el.addEventListener('click', handleSpeak);
+                if (isNoChange(el) || el.dataset.speakable) return;
+                el.dataset.speakable = true;
+                el.addEventListener('click', handleSpeakableClick);
             });
-            on('a11y-tts-btn');
+            isTextToSpeech = true;
+            indicatorOn('text-to-speech-btn');
         } else {
-            document.querySelectorAll('[data-a11y-speak]').forEach(el => {
-                delete el.dataset.a11ySpeak;
-                el.removeEventListener('click', handleSpeak);
+            document.querySelectorAll('*').forEach(el => {
+                if (el.dataset.speakable) {
+                    delete el.dataset.speakable;
+                    el.removeEventListener('click', handleSpeakableClick);
+                }
             });
             window.speechSynthesis.cancel();
-            off('a11y-tts-btn');
+            isTextToSpeech = false;
+            indicatorOff('text-to-speech-btn');
         }
-        S.isTTS = active;
-        save('isTTS', active);
-    }
-    $('a11y-tts-btn').addEventListener('click', () => setTTS(!S.isTTS));
+        localStorage.setItem('a11y_isTextToSpeech', isTextToSpeech);
+    };
 
     // ─── Speech to Text ───────────────────────────────────────────────────────
-    $('a11y-stt-btn').addEventListener('click', () => {
+    window.startRecognition = function () {
         const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SR) { alert('Speech recognition not supported in this browser.'); return; }
         const r = new SR();
         r.lang = 'en-US'; r.interimResults = false; r.maxAlternatives = 1;
-        on('a11y-stt-btn');
+        indicatorOn('voice-recog-btn');
         r.onresult = e => {
             const focused = document.activeElement;
             if (focused && (focused.tagName === 'INPUT' || focused.tagName === 'TEXTAREA'))
                 focused.value = e.results[0][0].transcript;
-            off('a11y-stt-btn');
+            indicatorOff('voice-recog-btn');
         };
-        r.onerror = () => off('a11y-stt-btn');
+        r.onerror = () => indicatorOff('voice-recog-btn');
         r.start();
-    });
+    };
 
-    // ─── Restore saved state on load ─────────────────────────────────────────
-    if (S.isInverted) setInvert(true);
-    if (S.isGrayscale) setGrayscale(true);
-    if (S.isCursorBig) setCursor(true);
-    if (S.guideEnabled) setGuide(true);
-    window.speechSynthesis && window.speechSynthesis.cancel();
-    setTimeout(() => {
-        if (S.isTTS) setTTS(true);
-        if (S.isUnderlined) setUnderline(true);
-        restoreTextSize();
-    }, 300);
+    // ─── Restore state on load ────────────────────────────────────────────────
+    function checkAccessibility() {
+        if (isCursorBig) { isCursorBig = false; window.bigCursor(); }
+        if (isInverted) { document.body.classList.add('invert'); indicatorOn('invert-color-btn'); }
+        if (isGrayscale) { document.body.classList.add('grayscale'); indicatorOn('toggle-grayscale-btn'); }
+        window.speechSynthesis.cancel();
+        setTimeout(() => {
+            if (isTextToSpeech) { isTextToSpeech = false; window.applySpeakable(); }
+            if (isLinkUnderlined) { isLinkUnderlined = false; window.toggleLinkUnderline(); }
+        }, 500);
+        if (guideEnabled) { guideEnabled = false; window.toggleReadingGuide(); }
+        setTextLoad();
+    }
+
+    checkAccessibility();
 
 })();
