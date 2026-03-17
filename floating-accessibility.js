@@ -60,7 +60,7 @@
     /* ── Big Cursor ── */
     html.a11y-big-cursor,
     html.a11y-big-cursor * {
-      cursor: url("big-cursor.png") 0 0, auto !important;
+      cursor: url("https://raw.githubusercontent.com/heptadecimall/floating-accessibility-cdn-test/main/big-cursor.png") 0 0, auto !important;
     }
 
     /* ── Reading guide ── */
