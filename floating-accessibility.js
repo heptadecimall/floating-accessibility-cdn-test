@@ -31,17 +31,21 @@
     .no-change ul { padding: 4px !important; margin: 0 !important; }
     .no-change p { margin: 1px !important; }
     #access-btn {
-      background-color: #1a56db !important;
+      background-color: #ffffff !important;
       border: none !important;
       border-radius: 6px !important;
       padding: 10px 12px !important;
       cursor: pointer;
-      color: #fff !important;
+      color: #555 !important;
       display: flex;
       align-items: center;
       justify-content: center;
     }
     #access-btn i { color: #555 !important; font-size: 24px; }
+    #access-btn.a11y-btn-open {
+      background-color: #1a56db !important;
+    }
+    #access-btn.a11y-btn-open i { color: #ffffff !important; }
     .a11y-menu-header {
       display: flex;
       justify-content: space-between;
@@ -70,6 +74,7 @@
       cursor: pointer;
       color: #555 !important;
       font-size: 13px !important;
+      font-weight: 600 !important;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -83,11 +88,12 @@
     }
     .float-accessibility ul li button.active i { color: #fff !important; }
 
-    body.invert {
+    body.a11y-invert {
       mix-blend-mode: difference !important;
       background-color: white !important;
+      position: static !important;
     }
-    .grayscale { background-color: gray; mix-blend-mode: luminosity; }
+    .a11y-grayscale { background-color: gray; mix-blend-mode: luminosity; }
     .reading-guide {
       position: fixed;
       width: 100%;
@@ -153,12 +159,14 @@
         document.getElementById('access-btn').style.display = 'none';
         document.getElementById('access-menu').style.display = 'block';
         document.querySelector('.float-accessibility').classList.add('menu-open');
+        document.getElementById('access-btn').classList.add('a11y-btn-open');
     };
 
     window.closeAccessMenu = function () {
         document.getElementById('access-btn').style.display = 'block';
         document.getElementById('access-menu').style.display = 'none';
         document.querySelector('.float-accessibility').classList.remove('menu-open');
+        document.getElementById('access-btn').classList.remove('a11y-btn-open');
     };
 
     window.resetAndReload = function () {
@@ -210,11 +218,11 @@
     // ─── Invert ───────────────────────────────────────────────────────────────
     window.invertColor = function () {
         if (isInverted) {
-            document.body.classList.remove('invert');
+            document.body.classList.remove('a11y-invert');
             indicatorOff('invert-color-btn');
         } else {
             if (isGrayscale) window.toggleGrayscale();
-            document.body.classList.add('invert');
+            document.body.classList.add('a11y-invert');
             indicatorOn('invert-color-btn');
         }
         isInverted = !isInverted;
@@ -238,11 +246,11 @@
     // ─── Grayscale ────────────────────────────────────────────────────────────
     window.toggleGrayscale = function () {
         if (isGrayscale) {
-            document.body.classList.remove('grayscale');
+            document.body.classList.remove('a11y-grayscale');
             indicatorOff('toggle-grayscale-btn');
         } else {
             if (isInverted) window.invertColor();
-            document.body.classList.add('grayscale');
+            document.body.classList.add('a11y-grayscale');
             indicatorOn('toggle-grayscale-btn');
         }
         isGrayscale = !isGrayscale;
@@ -346,8 +354,8 @@
     // ─── Restore state on load ────────────────────────────────────────────────
     function checkAccessibility() {
         if (isCursorBig) { isCursorBig = false; window.bigCursor(); }
-        if (isInverted) { document.body.classList.add('invert'); indicatorOn('invert-color-btn'); }
-        if (isGrayscale) { document.body.classList.add('grayscale'); indicatorOn('toggle-grayscale-btn'); }
+        if (isInverted) { document.body.classList.add('a11y-invert'); indicatorOn('invert-color-btn'); }
+        if (isGrayscale) { document.body.classList.add('a11y-grayscale'); indicatorOn('toggle-grayscale-btn'); }
         window.speechSynthesis.cancel();
         setTimeout(() => {
             if (isTextToSpeech) { isTextToSpeech = false; window.applySpeakable(); }
