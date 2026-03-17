@@ -4,22 +4,76 @@
     const style = document.createElement('style');
     style.textContent = `
     .float-accessibility {
-      background-color: #060270;
-      border-radius: 5px;
-      outline-color: #060606;
-      padding: 10px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 6px;
       position: fixed;
-      width: 35px;
+      width: auto;
       top: 30%;
+      left: 0;
       transition: all 0.3s linear;
-      box-shadow: 2px 2px 8px 0px rgba(0,0,0,.4);
+      box-shadow: 0 4px 16px rgba(0,0,0,.15);
       z-index: 10000;
+      border: 1px solid #e0e0e0;
     }
-    .float-accessibility p { color: white; }
-    .float-accessibility button { border-radius: 5px; border: #ff0000; }
-    .no-change { font-size: 16px !important; }
-    .no-change ul { padding: 5px 5px 5px 20px !important; margin: 5px !important; }
+    .float-accessibility p { color: #555; margin: 0; }
+    .no-change { font-size: 14px !important; }
+    .no-change ul { padding: 4px !important; margin: 0 !important; }
     .no-change p { margin: 1px !important; }
+    #access-btn {
+      background-color: #ffffff !important;
+      border: 1px solid #e0e0e0 !important;
+      border-radius: 6px !important;
+      padding: 6px 8px !important;
+      cursor: pointer;
+      color: #555 !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #access-btn i { color: #555 !important; font-size: 20px; }
+    #access-btn:hover { background-color: #f5f5f5 !important; }
+    .a11y-menu-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 4px 8px 4px;
+      border-bottom: 1px solid #e0e0e0;
+      margin-bottom: 4px;
+    }
+    .a11y-menu-header p { color: #333 !important; font-weight: 600; font-size: 13px !important; }
+    .a11y-menu-header button {
+      background: transparent !important;
+      border: none !important;
+      color: #888 !important;
+      cursor: pointer;
+      padding: 2px 5px !important;
+      border-radius: 4px !important;
+    }
+    .a11y-menu-header button:hover { background: #f0f0f0 !important; }
+    .a11y-menu-header i { color: #888 !important; }
+    .float-accessibility ul li button {
+      width: 100%;
+      text-align: left;
+      background: transparent !important;
+      border: none !important;
+      border-radius: 6px !important;
+      padding: 7px 10px !important;
+      cursor: pointer;
+      color: #555 !important;
+      font-size: 13px !important;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.15s;
+    }
+    .float-accessibility ul li button i { color: #888 !important; font-size: 15px; }
+    .float-accessibility ul li button:hover { background: #f5f5f5 !important; }
+    .float-accessibility ul li button.active {
+      background: #1a56db !important;
+      color: #fff !important;
+    }
+    .float-accessibility ul li button.active i { color: #fff !important; }
     .invert { mix-blend-mode: difference; background-color: white; }
     .grayscale { background-color: gray; mix-blend-mode: luminosity; }
     .reading-guide {
@@ -51,10 +105,12 @@
       <i class="bi bi-universal-access-circle no-change" style="color:white;"></i>
     </button>
     <div class="accessMenu no-change" id="access-menu" style="width:200px;display:none;">
-      <div class="menu-action no-change" style="display:flex;justify-content:space-between;">
-        <button onclick="closeAccessMenu()" style="background-color:transparent;color:white;border:none;"><i class="bi bi-x-circle no-change"></i></button>
-        <p>Accessibility</p>
-        <button onclick="resetAndReload()" class="no-change" style="background-color:transparent;color:white;border:none;"><i class="bi bi-arrow-clockwise no-change"></i></button>
+      <div class="a11y-menu-header no-change">
+        <p class="no-change">Accessibility</p>
+        <span style="display:flex;gap:4px;">
+          <button onclick="resetAndReload()" class="no-change" title="Reset"><i class="bi bi-arrow-clockwise no-change"></i></button>
+          <button onclick="closeAccessMenu()" class="no-change" title="Close"><i class="bi bi-x-circle no-change"></i></button>
+        </span>
       </div>
       <ul class="no-change" style="list-style-type:none;background-color:transparent;">
         <li class="no-change" style="margin:10px 0"><button class="no-change" style="width:100%;" type="button" id="inc-btn" onclick="incTextSize()"><i class="bi bi-zoom-in"></i> Increase Text</button></li>
@@ -100,11 +156,11 @@
 
     function indicatorOn(id) {
         const el = document.getElementById(id);
-        if (el) { el.style.background = 'blue'; el.style.color = 'white'; }
+        if (el) el.classList.add('active');
     }
     function indicatorOff(id) {
         const el = document.getElementById(id);
-        if (el) { el.style.background = 'white'; el.style.color = 'black'; }
+        if (el) el.classList.remove('active');
     }
 
     function isNoChange(el) {
