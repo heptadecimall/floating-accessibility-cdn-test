@@ -32,16 +32,16 @@
     .no-change p { margin: 1px !important; }
     #access-btn {
       background-color: #ffffff !important;
-      border: 1px solid #d0d0d0 !important;
+      border: none !important;
       border-radius: 6px !important;
-      padding: 6px 8px !important;
+      padding: 10px 12px !important;
       cursor: pointer;
       color: #555 !important;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    #access-btn i { color: #555 !important; font-size: 20px; }
+    #access-btn i { color: #555 !important; font-size: 24px; }
     .a11y-menu-header {
       display: flex;
       justify-content: space-between;
@@ -82,10 +82,7 @@
       color: #fff !important;
     }
     .float-accessibility ul li button.active i { color: #fff !important; }
-    body.invert {
-      background-color: white;
-      mix-blend-mode: difference;
-    }
+
     .grayscale { background-color: gray; mix-blend-mode: luminosity; }
     .reading-guide {
       position: fixed;
@@ -181,33 +178,29 @@
     }
 
     // ─── Text Size ────────────────────────────────────────────────────────────
-    window.incTextSize = function () { changeTextSize(2); };
-    window.decTextSize = function () { changeTextSize(-2); };
-
-    function changeTextSize(step) {
-        textSize += step;
+    // snapshot all original font sizes once on load
+    function snapshotFontSizes() {
         document.querySelectorAll('*').forEach(el => {
             if (isNoChange(el)) return;
-            // store original font size on first touch
             if (!el.dataset.origFs) {
                 el.dataset.origFs = parseFloat(window.getComputedStyle(el).fontSize);
             }
-            const orig = parseFloat(el.dataset.origFs);
-            if (orig) el.style.fontSize = (orig + textSize) + 'px';
         });
-        localStorage.setItem('a11y_textSize', textSize);
     }
+
+    function applyTextSize() {
+        document.querySelectorAll('*').forEach(el => {
+            if (isNoChange(el) || !el.dataset.origFs) return;
+            el.style.fontSize = (parseFloat(el.dataset.origFs) + textSize) + 'px';
+        });
+    }
+
+    window.incTextSize = function () { textSize += 2; applyTextSize(); localStorage.setItem('a11y_textSize', textSize); };
+    window.decTextSize = function () { textSize -= 2; applyTextSize(); localStorage.setItem('a11y_textSize', textSize); };
 
     function setTextLoad() {
         if (textSize === 0) return;
-        document.querySelectorAll('*').forEach(el => {
-            if (isNoChange(el)) return;
-            if (!el.dataset.origFs) {
-                el.dataset.origFs = parseFloat(window.getComputedStyle(el).fontSize);
-            }
-            const orig = parseFloat(el.dataset.origFs);
-            if (orig) el.style.fontSize = (orig + textSize) + 'px';
-        });
+        applyTextSize();
     }
 
     // ─── Invert ───────────────────────────────────────────────────────────────
@@ -360,6 +353,7 @@
         setTextLoad();
     }
 
+    snapshotFontSizes();
     checkAccessibility();
 
 })();
